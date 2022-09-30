@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Image Tracking Video</title>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.1.5/dist/mindar-image.prod.js"></script>
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.1.5/dist/mindar-image-aframe.prod.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const sceneEl = document.querySelector("a-scene");
+        const arSystem = sceneEl.systems["mindar-image-system"];
+        const exampleTarget = document.querySelector("#example-target");
+        const examplePlane = document.querySelector("#example-plane");
+        const startButton = document.querySelector("#example-start-button");
+        const stopButton = document.querySelector("#example-stop-button");
+        const pauseButton = document.querySelector("#example-pause-button");
+        const pauseKeepVideoButton = document.querySelector(
+          "#example-pause-keep-video-button"
+        );
+        const unpauseButton = document.querySelector("#example-unpause-button");
+        startButton.addEventListener("click", () => {
+          console.log("start");
+          arSystem.start(); // start AR
+        });
+        stopButton.addEventListener("click", () => {
+          arSystem.stop(); // stop AR
+        });
+        pauseButton.addEventListener("click", () => {
+          arSystem.pause(); // pause AR, keep video feed
+        });
+        pauseKeepVideoButton.addEventListener("click", () => {
+          arSystem.pause(true); // pause AR and video
+        });
+        unpauseButton.addEventListener("click", () => {
+          arSystem.unpause(); // unpause AR and video
+        });
+        // arReady event triggered when ready
+        sceneEl.addEventListener("arReady", (event) => {
+          // console.log("MindAR is ready")
+        });
+        // arError event triggered when something went wrong. Mostly browser compatbility issue
+        sceneEl.addEventListener("arError", (event) => {
+          // console.log("MindAR failed to start")
+        });
+        // detect target found
+        exampleTarget.addEventListener("targetFound", (event) => {
+          console.log("target found");
+        });
+        // detect target lost
+        exampleTarget.addEventListener("targetLost", (event) => {
+          console.log("target lost");
+        });
+        // detect click event
+        examplePlane.addEventListener("click", (event) => {
+          console.log("plane click");
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <div style="position: absolute; z-index: 1000">
+      <button id="example-start-button">Start</button>
+      <button id="example-pause-button">Pause</button>
+      <button id="example-pause-keep-video-button">Pause (keep video)</button>
+      <button id="example-unpause-button">UnPause</button>
+      <button id="example-stop-button">Stop</button>
+    </div>
+    <a-scene
+      mindar-image="filterMinCF:0.01; filterBeta: 70; warmupTolerance: 1; uiLoading: #loading; uiScanning: #loading;imageTargetSrc: ./utils/targets.mind; maxTrack: 2"
+      vr-mode-ui="enabled: false"
+      device-orientation-permission-ui="enabled: false"
+      color-space="sRGB"
+      renderer="colorManagement: true, physicallyCorrectLights"
+    >
+      <a-assets>
+        <video
+          id="gokuVideo"
+          type="video/mkv"
+          autoplay
+          loop="true"
+          src="https://drive.google.com/file/d/17C6lYIb-1-WK9gZc5VeZL9qJ4JpxDKAt/view?usp=sharing"
+          playsinline
+        ></video>
+
+        <video
+          id="dragonball1986"
+          type="video/mkv"
+          autoplay
+          loop="true"
+          src="https://drive.google.com/file/d/1ifGMFub6i3P1MvA23qLVj7cULjzIMbtQ/view?usp=sharing"
+          playsinline
+        ></video>
+      </a-assets>
+
+      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+
+      <a-entity
+        id="Goku"
+        mindar-image-target="targetIndex: 0"
+        look-controls="enabled: false"
+      >
+        <a-plane
+          src="#gokuVideo"
+          position="0 0 0"
+          height="0.552"
+          width="1"
+          rotation="0 0 0"
+        ></a-plane>
+      </a-entity>
+
+      <a-entity
+        id="DragonBall1986"
+        mindar-image-target="targetIndex: 1"
+        look-controls="enabled: false"
+      >
+        <a-plane
+          src="#dragonball1986"
+          position="0 0 0"
+          height="0.552"
+          width="1"
+          rotation="0 0 0"
+        ></a-plane>
+      </a-entity>
+    </a-scene>
+  </body>
+</html>
